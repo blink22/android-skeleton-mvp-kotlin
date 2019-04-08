@@ -14,7 +14,7 @@
                 android:name="io.fabric.ApiKey"
                 android:value="5fbdeaafed47311c905f6ccd85d6531f126b781a"/>
 
-        <activity android:name=".MainActivity">
+        <activity android:name="com.template.android.ui.splash.view.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
