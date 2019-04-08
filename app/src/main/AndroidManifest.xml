@@ -12,7 +12,7 @@
 
         <meta-data
                 android:name="io.fabric.ApiKey"
-                android:value="5fbdeaafed47311c905f6ccd85d6531f126b781a"/>
+                android:value="<YOUR_API_KEY_GOES_HERE>"/>
 
         <activity android:name="com.template.android.ui.splash.view.SplashActivity">
             <intent-filter>
