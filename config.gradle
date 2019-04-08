@@ -1,0 +1,72 @@
+ext {
+    getVersionName = { ->
+        try {
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'describe', '--first-parent' // only branch merges
+                standardOutput = stdout
+            }a
+            def versionNameStartIndex = 2; // v- prefix
+            return stdout.toString().trim().substring(versionNameStartIndex)
+        } catch (ignored) {
+            return null
+        }
+    }
+
+    getVersionCode = { ->
+        try {
+            def concernedBranch = 'develop'
+            def stdout = new ByteArrayOutputStream()
+            exec {
+                commandLine 'git', 'rev-list', '--first-parent', '--count', concernedBranch
+                standardOutput = stdout
+            }
+            return Integer.parseInt(stdout.toString().trim())
+        } catch (ignored) {
+            return 1
+        }
+    }
+
+    sdk = [
+            minSdkVersion          : 14,
+            targetSdkVersion       : 28,
+            compileSdkVersion      : 28,
+            appcompatVersion       : "1.0.2",
+            kotlinVersion          : '1.2.71',
+            multiDexVersion        : '2.0.1',
+            recyclerViewVersion    : '1.0.0',
+            cardViewVersion        : '1.0.0',
+            constraintLayoutVersion: '2.0.0-alpha4'
+    ]
+
+    test = [
+            runnerVersion      : "1.1.1",
+            espressoCoreVersion: "3.1.1",
+            junitVersion       : "4.12",
+            mockitoVersion     : "2.7.1",
+            junitExtVersion    : "1.1.0"
+    ]
+
+    external = [
+            retrofitVersion                : "2.4.0",
+            dagger2SdkVersion              : "2.16",
+            rxjava2Version                 : "2.2.3",
+            leakcanaryVersion              : "1.6.2",
+            rxandroid2Version              : "2.1.0",
+            crashlyticsVersion             : "2.9.7@aar",
+            ktlintVersion                  : '0.29.0',
+            alerterVersion                 : "4.0.0",
+            gsonVersion                    : "2.8.5",
+            glide                          : "4.8.0",
+            autofittextview                : "0.2.+",
+            rxpermissionsVersion           : "0.10.2"
+    ]
+
+    firebase = [
+            remoteConfigVersion     : "16.5.0",
+            rxFirebaseVersion       : "1.5.6",
+            coreVersion             : "16.0.8",
+            authVersion             : "16.2.1",
+            firestoreVersion        : "18.2.0"
+    ]
+}

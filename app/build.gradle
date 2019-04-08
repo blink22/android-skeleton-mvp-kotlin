@@ -1,0 +1,154 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-kapt'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'io.fabric'
+
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
+
+android {
+    compileSdkVersion rootProject.ext.sdk["compileSdkVersion"]
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId "com.template.android"
+        minSdkVersion rootProject.ext.sdk["minSdkVersion"]
+        targetSdkVersion rootProject.ext.sdk["targetSdkVersion"]
+        versionCode rootProject.ext.getVersionCode()
+        versionName rootProject.ext.getVersionName()
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias 'AndroidDebugKey'
+            keyPassword 'android'
+            storeFile file('../keystore/debug.keystore')
+            storePassword 'android'
+        }
+        config {
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            minifyEnabled false
+            debuggable true
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+configurations {
+    ktlint
+}
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+
+    // SDK
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+    implementation "androidx.appcompat:appcompat:${sdk["appcompatVersion"]}"
+
+    // UI
+    implementation "androidx.multidex:multidex:${sdk["multiDexVersion"]}"
+    implementation "androidx.recyclerview:recyclerview:${sdk["recyclerViewVersion"]}"
+    implementation "androidx.constraintlayout:constraintlayout:${sdk["constraintLayoutVersion"]}"
+    implementation "androidx.cardview:cardview:${sdk["cardViewVersion"]}"
+
+    // Test
+    testImplementation "junit:junit:${test["junitVersion"]}"
+    androidTestImplementation "androidx.test:runner:${test["runnerVersion"]}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${test["espressoCoreVersion"]}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${test["espressoCoreVersion"]}"
+    androidTestImplementation "androidx.test.espresso:espresso-web:${test["espressoCoreVersion"]}"
+    androidTestImplementation "androidx.test.ext:junit:${test["junitExtVersion"]}"
+    androidTestImplementation "org.mockito:mockito-core:${test["mockitoVersion"]}"
+
+    // Retrofit
+    implementation "com.squareup.retrofit2:retrofit:${external["retrofitVersion"]}"
+    implementation "com.squareup.retrofit2:converter-gson:${external["retrofitVersion"]}"
+    implementation "com.squareup.retrofit2:adapter-rxjava:${external["retrofitVersion"]}"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:${external["retrofitVersion"]}"
+
+    // Dagger2
+    implementation "com.google.dagger:dagger:${external["dagger2SdkVersion"]}"
+    implementation "com.google.dagger:dagger-android:${external["dagger2SdkVersion"]}"
+    implementation "com.google.dagger:dagger-android-support:${external["dagger2SdkVersion"]}"
+    kapt "com.google.dagger:dagger-compiler:${external["dagger2SdkVersion"]}"
+    kapt "com.google.dagger:dagger-android-processor:${external["dagger2SdkVersion"]}"
+
+    // RxJava2
+    implementation "io.reactivex.rxjava2:rxjava:${external["rxjava2Version"]}"
+    implementation "io.reactivex.rxjava2:rxandroid:${external["rxandroid2Version"]}"
+
+    // Leak Canary
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:${external["leakcanaryVersion"]}"
+    releaseImplementation "com.squareup.leakcanary:leakcanary-android-no-op:${external["leakcanaryVersion"]}"
+    debugImplementation "com.squareup.leakcanary:leakcanary-support-fragment:${external["leakcanaryVersion"]}"
+
+    // Fabric
+    implementation("com.crashlytics.sdk.android:crashlytics:${external["crashlyticsVersion"]}") {
+        transitive = true;
+    }
+
+    // Linting
+    ktlint "com.github.shyiko:ktlint:${external["ktlintVersion"]}"
+
+    // Alerter
+    implementation "com.tapadoo.android:alerter:${external["alerterVersion"]}"
+
+    // Firebase
+    implementation "com.google.firebase:firebase-core:${firebase["coreVersion"]}"
+    implementation "com.github.FrangSierra:RxFirebase:${firebase["rxFirebaseVersion"]}"
+    implementation "com.google.firebase:firebase-auth:${firebase["authVersion"]}"
+    implementation "com.google.firebase:firebase-firestore:${firebase["firestoreVersion"]}"
+
+    // GSON
+    implementation "com.google.code.gson:gson:${external["gsonVersion"]}"
+
+    // Firebase Remote Config
+    implementation "com.google.firebase:firebase-config:${firebase["remoteConfigVersion"]}"
+
+    // Image Loading
+    implementation "com.github.bumptech.glide:glide:${external["glide"]}"
+    kapt "com.github.bumptech.glide:compiler:${external["glide"]}"
+
+    // AutoFitTextView
+    implementation "me.grantland:autofittextview:${external["autofittextview"]}"
+
+    // Permissions
+    implementation "com.github.tbruyelle:rxpermissions:${external["rxpermissionsVersion"]}"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt", "--reporter=plain,output=${buildDir}/reports/ktlint"
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
+}
+
+//apply plugin: 'com.google.gms.google-services'
